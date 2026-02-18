@@ -71,7 +71,7 @@ Use a consistent style:
 - "Student Name" → "student_name"  
 - "Test Score" → "test_score"
 
-# Two Options
+## Two Options for Cleaning Column Names
 
 You can either (1) Rename the columns manually, or (2) leverage an algorithm to change the existing strings.
 
@@ -94,3 +94,54 @@ df.columns = (
       .str.replace(" ", "_")       # replace spaces with underscores
 )
 ```
+## Cleaning String Entries
+
+When people fill out surveys on something like Google Forms, the export often has the entire entry, not a code like 1, 2, or 3.
+
+For example, in my stroop test, the group assignment wasn't a simple `walk`, but instead was `Walking Group (W - Green)`
+So we should replace this to make it easier to call later.
+
+If you have a simple cleanup, you can do something like this
+```python
+df["grade_level"] = (
+    df["grade_level"]
+      .astype(str)        # ensures values behave like strings
+      .str.strip()        # remove leading/trailing spaces
+      .str.lower()        # standardize case
+      .str.replace(r"\s+", "_", regex=True)   #replaces spaces with underscores
+)
+```
+
+Instead, if you only have a few options (like less than 10), I'd reccomend you map them:
+
+```python
+df["grade_level"] = df["grade_level"].replace({
+    "Freshman": "freshman",
+    "freshman": "freshman",
+    " Freshman ": "freshman",
+    "Fresh man": "freshman",
+    "9th Grade": "freshman",
+    "Grade 9": "freshman",
+
+    "Sophomore": "sophomore",
+    "10th Grade": "sophomore",
+    "Grade 10": "sophomore",
+
+    "Junior": "junior",
+    "11th Grade": "junior",
+
+    "Senior": "senior",
+    "12th Grade": "senior",
+})
+
+```
+
+# Dealing with Missing Values
+
+You also may end up with missing values. There's a few ways to deal with this. If you plan to eliminate anybody who did not fill out every field, you can drop the na columns like this:
+
+```python
+df = df.dropna(subset=["test_score"])
+```
+
+However, if you choose to keep them in (which many of you will), you might just want to mention that, or just eliminate them from that specific average. It depends on your study, how important that question was, etc. Just remember to always be transparent about your data cleaning and data use practices in your Methods section.
