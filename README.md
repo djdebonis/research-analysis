@@ -5,7 +5,7 @@
 Welcome! This site hosts our class lesson materials for cleaning data in Python.
 
 ## Lesson 1: Cleaning Data in Python
-- [Cleaning Data in pandas](.spreadsheet_cleaning_python.md)
+- [Cleaning Data in pandas](./spreadsheet_cleaning_python.md)
 
 ## What you’ll learn
 - Import a `.csv` into a Jupyter Notebook
