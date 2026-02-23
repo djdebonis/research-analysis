@@ -118,7 +118,12 @@ max (highest score)
 
 So instead of one summary for the whole dataset, you get one summary per class period.
 
-**You can also group by multiple columns. See the example for my stroop data here:**
+**You can also group by multiple columns.**
+
+`df.groupby(by=["column1","column2"])["column3"].describe()`
+
+**See the example for my stroop data here:**
+
 
 ```
 # display descriptive data by intervention groups and score type
@@ -126,4 +131,6 @@ So instead of one summary for the whole dataset, you get one summary per class p
 stroop_data.groupby(by=["intervention","score_type"])["pre1"].describe()
 ```
 Which gives an output like this:
+
+![picture of example of groupby with .describe()](stroop_example_groupby.png)
 
