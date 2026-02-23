@@ -117,3 +117,13 @@ min (lowest score)
 max (highest score)
 
 So instead of one summary for the whole dataset, you get one summary per class period.
+
+**You can also group by multiple columns. See the example for my stroop data here:**
+
+```
+# display descriptive data by intervention groups and score type
+# for pretest1
+stroop_data.groupby(by=["intervention","score_type"])["pre1"].describe()
+```
+Which gives an output like this:
+
