@@ -58,7 +58,7 @@ Examples:
 
 These are matched scores because they come from the same participants. The statistical implications are slightly different.
 
-### Step 3: Prepare Data (Independent T-Test)
+### Independent T-Test
 
 We are comparing two groups in the Stroop dataset:
 
@@ -92,6 +92,10 @@ Now, we will run our t-test. We will use the independent t test because they are
 ```python
 t_result_post_cong_incong_combined = stats.ttest_ind(exercise_scores_post, sedentary_scores_post)
 
+# you will want to print means and stds at the same time so you have all of the relavant
+# data at the same time
+print(f"Exercise Group: Mean: {exercise_scores_post.mean()}, std: {exercise_scores_post.std()}")
+print(f"Sedentary Group: Mean: {sedentary_scores_post.mean()}, std: {sedentary_scores_post.std()}")
 print(t_result_post_cong_incong_combined)
 print("t-statistic:", t_result_post_cong_incong_combined.statistic)
 print("p-value:", t_result_post_cong_incong_combined.pvalue)
@@ -100,13 +104,67 @@ print("p-value:", t_result_post_cong_incong_combined.pvalue)
 And, the output I get is:
 
 ```
+Exercise Group: Mean: 722.810606060606, std: 146.06517947482098
+Sedentary Group: Mean: 746.9957627118644, std: 142.53799157319776
 TtestResult(statistic=-1.0941352910900843, pvalue=0.2753415969243852, df=182.0)
 t-statistic: -1.0941352910900843
 p-value: 0.2753415969243852
 ```
+So, just looking at the summary statistics, you can see the two groups are pretty close together. However, we can't just vibe it out and go by what "seems" close. We need to use a t-test to determine if they're stasticially different.
+
 So, because our p-value is above 0.05, we fail to reject the null hypothesis. This means there is *not enough evidence* to suggest there is a stastically significant difference between these groups.
 
 In this case, this is actually not bad for the research, because remember we are only using this for example. With this data, we are more interested in *difference between* pre and post data, as well as differences in the congruent vs incongruent data (Stroop Effect).
+
+
+##  Paired T-Test (Same Group)
+
+Remember, this is
+Paired T-Test
+- same participants (paired data)
+- numerical data
+- differences roughly normal
+
+So, for this one, I am curious if exercise intervention had a stastically significant effect on incongruent scores (scores where the ink color of the word is different from the denotation of the color word displayed). As a simple interpretation of Stroop Data, this might suggest that low intensity exercise could improve inhibitory control directly after. I still ahve my pre_average and post_average from before, so now I will just compare them based on group. First I'll filter
+
+```python
+# now, we will look at exercise incongruent pre vs exercise incongruent post
+# and see if there is a stastically significant difference
+# let's filter our dataframe so we are only looking at incongruent scores
+# for the exercise group. This is for simplicity.
+stroop_data_incong_ex = stroop_data[
+    (stroop_data["score_type"] == "incongruent") & 
+    (stroop_data["group"] == "exercise")] 
+
+
+```
+
+Now I will run the test
+
+```python
+stroop_data_incong_ex_pre = stroop_data_incong_ex["pre_average"]
+stroop_data_incong_ex_post = stroop_data_incong_ex["post_average"]
+
+t_result_post_incong_ex = stats.ttest_rel(stroop_data_incong_ex["pre_average"], 
+                                          stroop_data_incong_ex["post_average"])
+
+# you will want to print means and stds at the same time so you have all of the relavant
+# data at the same time
+print(f"Pre Scores: Mean: {stroop_data_incong_ex_pre.mean()}, std: {stroop_data_incong_ex_pre.std()}")
+print(f"Post Scores: Mean: {stroop_data_incong_ex_post.mean()}, std: {stroop_data_incong_ex_post.std()}")
+print(t_result_post_incong_ex)
+```
+
+and we get this as an output:
+
+```
+Pre Scores: Mean: 861.2272727272727, std: 160.8618919926486
+Post Scores: Mean: 779.7878787878788, std: 149.7222444177379
+TtestResult(statistic=5.51417457025686, pvalue=4.449254900088657e-06, df=32)
+```
+
+So, although there appears to be a difference between pre and post scores, our test statistic and pvalue suggest that it is not a stastically significant difference.
+
 
 
 
